@@ -1,0 +1,109 @@
+.home-page {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 50px;
+}
+
+.home-header {
+  padding: 60px 20px;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1200x400/202020/EAEAEA?text=Basketball+Court+Background');
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-bottom: 50px;
+  color: #fff;
+}
+
+.home-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+  color: var(--accent-orange);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.home-header .subtitle {
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  line-height: 1.7;
+}
+.btn-primary-home {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+}
+
+.features-overview {
+  margin-bottom: 50px;
+}
+.features-overview h2 {
+  margin-bottom: 40px;
+  font-size: 2.2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.feature-item {
+  background-color: var(--container-bg);
+  padding: 30px 25px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: var(--accent-blue);
+}
+
+.feature-item h3 {
+  color: var(--accent-blue);
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+}
+
+.feature-item p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.call-to-action {
+  background-color: var(--container-bg);
+  padding: 40px 30px;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: 1px solid var(--border-color);
+}
+
+.call-to-action h2 {
+  color: var(--accent-orange);
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+.call-to-action p {
+  margin-bottom: 25px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .home-header h1 {
+    font-size: 2.4rem;
+  }
+  .home-header .subtitle {
+    font-size: 1.1rem;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}

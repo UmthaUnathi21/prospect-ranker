@@ -1,0 +1,114 @@
+.player-card-item {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-card-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.player-card-item.user-highlight {
+  border-left: 6px solid var(--accent-orange);
+  background-color: var(--highlight-bg);
+}
+
+.player-card-header {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.player-rank {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--accent-blue);
+  margin-right: 10px;
+}
+
+.player-name {
+  font-size: 1.4em;
+  color: var(--text-primary);
+  margin-right: 8px;
+  margin-bottom: 0; 
+  font-weight: 700;
+}
+
+.player-team {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  margin-right: 10px;
+  font-style: italic;
+}
+
+.user-tag {
+  background-color: var(--accent-orange);
+  color: var(--primary-bg);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+.player-card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.stat-item {
+  background-color: var(--container-bg);
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.player-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+.player-info { margin: 0; }
+
+.league-tag {
+  background-color: var(--accent-blue);
+  color: var(--primary-bg);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 0.8em;
+}

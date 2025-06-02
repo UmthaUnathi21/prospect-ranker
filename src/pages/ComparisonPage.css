@@ -1,0 +1,92 @@
+.comparison-page {
+  padding-bottom: 30px;
+}
+.inline-link {
+    color: var(--accent-orange);
+    font-weight: bold;
+    text-decoration: underline;
+}
+.inline-link:hover {
+    color: var(--accent-blue);
+}
+
+.comparison-controls.card {
+  margin-bottom: 30px;
+}
+.num-results-selector label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.num-results-selector select {
+  padding: 10px 12px;
+  min-width: 150px;
+}
+
+.user-profile-summary.card {
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border-left: 5px solid var(--accent-blue);
+}
+.user-profile-summary h3 {
+    color: var(--accent-blue);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.similar-players-list h2 {
+  color: var(--accent-orange);
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.8rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.comparison-item {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.similarity-score {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  text-align: right;
+  margin-top: -10px;
+  margin-right: 5px;
+  font-style: italic;
+  font-weight: bold;
+  padding: 5px 10px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 0 0 5px 5px;
+}
+
+.no-results {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1em;
+  padding: 30px;
+  background-color: var(--container-bg);
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .comparison-controls.card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .num-results-selector {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .num-results-selector label {
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  .num-results-selector select {
+    width: 100%;
+  }
+}

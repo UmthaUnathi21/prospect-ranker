@@ -1,0 +1,120 @@
+.rankings-page {
+  padding-bottom: 30px;
+}
+
+.controls.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.league-toggle button.btn {
+  padding: 10px 20px;
+  border: 2px solid var(--accent-blue);
+  background-color: transparent;
+  color: var(--accent-blue);
+  font-weight: bold;
+}
+.league-toggle button.btn:last-child { margin-right: 0; }
+.league-toggle button.btn.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+}
+.league-toggle button.btn:hover:not(.active) {
+  background-color: rgba(0, 168, 232, 0.1);
+}
+
+.sort-options label, .search-filter label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.sort-options select, .search-filter input[type="text"] {
+  padding: 10px 12px;
+  min-width: 180px; 
+}
+.search-filter input[type="text"] {
+  min-width: 220px;
+}
+
+
+.user-rank-summary.card {
+  margin-bottom: 25px;
+  border-left: 5px solid var(--accent-orange);
+}
+
+.sticky-user-rank {
+  position: sticky;
+  top: 85px;
+  z-index: 900;
+  background-color: var(--primary-bg);
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.user-rank-title {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 1.6rem;
+  color: var(--accent-orange);
+}
+.user-rank-title .in-league {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  font-weight: normal;
+}
+.sorted-by-stat {
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.player-list {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.no-results {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1em;
+  padding: 30px;
+  background-color: var(--container-bg);
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .controls.card {
+    flex-direction: column;
+    align-items: stretch; 
+  }
+  .control-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .league-toggle {
+    justify-content: center;
+  }
+  .sort-options select, .search-filter input[type="text"] {
+    width: 100%;
+    min-width: unset;
+  }
+  .sticky-user-rank {
+    position: static; 
+    box-shadow: none;
+    border-top: 2px solid var(--border-color);
+  }
+}

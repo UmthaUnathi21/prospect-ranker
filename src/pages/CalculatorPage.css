@@ -1,0 +1,121 @@
+.calculator-page {
+  padding-bottom: 40px;
+}
+
+.results-display {
+  margin-top: 40px;
+}
+
+.results-title {
+  text-align: center;
+  color: var(--accent-orange);
+  margin-bottom: 25px;
+}
+
+.profile-summary {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+.profile-summary h3 {
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.profile-summary p {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+.profile-summary h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--accent-blue);
+  text-align: center;
+}
+.stats-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 20px;
+}
+.stats-list li {
+  background-color: var(--primary-bg);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.95em;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+
+.probability-results h3 {
+  text-align: center;
+  color: var(--accent-blue);
+  margin-bottom: 20px;
+}
+
+.probability-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.prob-item {
+  text-align: left;
+}
+
+.prob-league {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.meter-bar-container {
+  width: 100%;
+  background-color: var(--primary-bg);
+  border-radius: 5px;
+  height: 30px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.meter-bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9em;
+  white-space: nowrap;
+  transition: width 0.5s ease-in-out;
+  border-radius: 4px 0 0 4px;
+}
+.meter-bar:is([style*="width: 100%"]) {
+    border-radius: 4px;
+}
+
+
+.ncaa-bar {
+  background: linear-gradient(90deg, var(--accent-blue), #007bff);
+}
+
+.nba-bar {
+  background: linear-gradient(90deg, var(--accent-orange), #e07b00);
+}
+
+.disclaimer {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  margin-top: 15px;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
+}
