@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navbar.css';
+import logo from '../assets/ProspectRanker-logo.png';
 
 const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="nav-container container">
         <NavLink to="/" className="nav-logo">
-          ProspectRanker 🏀
+          <img src={logo} alt="ProspectRanker Logo" />
         </NavLink>
         <input type="checkbox" id="nav-toggle" className="nav-toggle-checkbox" />
         <label htmlFor="nav-toggle" className="nav-toggle-label">

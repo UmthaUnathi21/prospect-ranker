@@ -1,31 +1,35 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useNavigate as useActualNavigate } from 'react-router-dom'; // Assuming you use React Router
-import './LandingPage.css'; // Import the CSS file
+// Standard import for useNavigate
+import { useNavigate } from 'react-router-dom'; 
+// Import your logo image
+import prospectRankerLogoSrc from '../assets/ProspectRanker-logo.png'; // Adjust path if your logo is named differently or in a different subfolder of assets
+
+// CSS is embedded below
+
+// Define constants outside the component to ensure they are stable
+const NUM_COLLAGE_ITEMS = 1; // Adjusted by user to 1
+const MEDIA_SOURCES = [ // Array of media sources for the collage
+    { type: 'image', src: './src/assets/LandingPage-Image01.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image02.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image03.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image06.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image07.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image08.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image09.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image10.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image14.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image15.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image16.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image17.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image18.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image19.jpg' },
+    { type: 'image', src: './src/assets/LandingPage-Image20.jpg' },
+    // Example for video: { type: 'video', src: 'path/to/your/video1.mp4' }, 
+];
 
 const LandingPage = () => {
-    // --- Navigation Hook Handling ---
-    // Safely initialize useNavigate to prevent crashes if not within a <Router> context (e.g., in a preview environment)
-    let navigate = (path) => {
-        console.warn(
-            `Navigation to "${path}" was attempted, but a router context was not found or useNavigate failed. ` +
-            `This is a fallback. Ensure this component is rendered within a <Router> in your application.`
-        );
-        // Fallback behavior for previewing (e.g., hash change or just log)
-        // window.location.hash = path; // Example: simple hash navigation
-    };
-
-    try {
-        // Attempt to get the actual navigate function from React Router
-        // useActualNavigate is imported to avoid naming collision if useNavigate was already declared
-        const actualNavigate = useActualNavigate();
-        navigate = actualNavigate; // If successful, use the real navigate function
-    } catch (error) {
-        // Log the error if useNavigate() fails (e.g., not in Router context)
-        console.warn(
-            "useNavigate() hook failed. This typically means the component is not rendered within a <Router> context. " +
-            "Falling back to a mock navigation function. Error: ", error.message
-        );
-    }
+    // Call useNavigate at the top level, unconditionally.
+    const navigate = useNavigate();
 
     const collageBackgroundRef = useRef(null);
     const [collageItems, setCollageItems] = useState([]);
@@ -33,68 +37,47 @@ const LandingPage = () => {
     // --- Message Box State ---
     const [isMessageBoxVisible, setIsMessageBoxVisible] = useState(false);
     const [messageBoxContent, setMessageBoxContent] = useState({ title: '', text: '' });
-    const [messageBoxOkCallback, setMessageBoxOkCallback] = useState(null); // Stores the function that returns the actual onOk callback
+    const [messageBoxOkCallback, setMessageBoxOkCallback] = useState(null); 
 
     const showMessage = useCallback((title, text, onOk) => {
         setMessageBoxContent({ title, text });
-        // Store a function that, when called, will return the original onOk callback.
-        // This is to ensure the latest onOk is captured if showMessage is called multiple times
-        // with different onOk functions before the previous one is dismissed.
-        setMessageBoxOkCallback(() => () => onOk()); 
+        setMessageBoxOkCallback(() => onOk); 
         setIsMessageBoxVisible(true);
-    }, []);
+    }, []); 
 
     const handleMessageBoxOk = () => {
         setIsMessageBoxVisible(false);
         if (typeof messageBoxOkCallback === 'function') {
-            const getOnOkFunction = messageBoxOkCallback(); // This will be () => onOk()
-            if (typeof getOnOkFunction === 'function') {
-                 const onOkFunction = getOnOkFunction(); // This will be the actual onOk passed to showMessage
-                 if (typeof onOkFunction === 'function') {
-                    onOkFunction(); // Execute the actual onOk callback
-                 }
+            const onOkFunction = messageBoxOkCallback(); 
+            if (typeof onOkFunction === 'function') {
+                onOkFunction(); 
             }
         }
     };
 
-    // --- Collage Configuration ---
-    const numCollageItems = 12;
-    const mediaSources = [ // Ensure these URLs are publicly accessible and correct
-        { type: 'image', src: 'https://placehold.co/600x400/000000/FFFFFF?text=Tech+Abstract&font=inter' },
-        { type: 'image', src: 'https://placehold.co/400x600/1E40AF/FFFFFF?text=Growth&font=inter' },
-        { type: 'image', src: 'https://placehold.co/500x500/34D399/000000?text=Data&font=inter' },
-        { type: 'image', src: 'https://placehold.co/600x300/F59E0B/FFFFFF?text=Connect&font=inter' },
-        { type: 'image', src: 'https://placehold.co/450x650/7C3AED/FFFFFF?text=Innovation&font=inter' },
-        { type: 'image', src: 'https://placehold.co/800x400/DC2626/FFFFFF?text=Strategy&font=inter' },
-        { type: 'image', src: 'https://placehold.co/300x500/059669/FFFFFF?text=Clarity&font=inter' },
-        { type: 'image', src: 'https://placehold.co/700x700/DB2777/FFFFFF?text=Insight&font=inter' },
-        { type: 'image', src: 'https://placehold.co/600x450/4F46E5/FFFFFF?text=Future&font=inter' },
-        { type: 'image', src: 'https://placehold.co/350x550/D97706/FFFFFF?text=Success&font=inter' },
-        // { type: 'video', src: 'path/to/your/video1.mp4' }, // Ensure video paths are correct and files are hosted
-    ];
-
+    // Function to update a single item in the collage
     const updateCollageItem = useCallback((itemDiv, isInitial = false) => {
         if (!itemDiv) return; 
 
-        const randomMedia = mediaSources[Math.floor(Math.random() * mediaSources.length)];
+        const randomMedia = MEDIA_SOURCES[Math.floor(Math.random() * MEDIA_SOURCES.length)];
         
-        itemDiv.classList.add('fade-out');
+        itemDiv.classList.add('fade-out'); 
 
         setTimeout(() => {
-            while (itemDiv.firstChild) {
+            while (itemDiv.firstChild) { 
                 itemDiv.removeChild(itemDiv.firstChild);
             }
 
             if (randomMedia.type === 'image') {
                 const img = document.createElement('img');
                 img.alt = 'Collage background image';
-                img.dataset.loading = 'true';
-                img.onload = () => {
+                img.dataset.loading = 'true'; 
+                img.onload = () => { 
                     img.dataset.loading = 'false';
                     itemDiv.classList.remove('fade-out');
                     itemDiv.classList.add('fade-in');
                 };
-                img.onerror = () => {
+                img.onerror = () => { 
                     console.error("Error loading image:", randomMedia.src);
                     img.src = 'https://placehold.co/400x300/CCCCCC/000000?text=Image+Load+Error&font=inter';
                     img.alt = 'Error loading image';
@@ -110,14 +93,14 @@ const LandingPage = () => {
                 video.autoplay = true;
                 video.loop = true;
                 video.muted = true;
-                video.playsInline = true;
-                video.onloadeddata = () => {
+                video.playsInline = true; 
+                video.onloadeddata = () => { 
                     itemDiv.classList.remove('fade-out');
                     itemDiv.classList.add('fade-in');
                 };
-                video.onerror = () => {
+                video.onerror = () => { 
                     console.error("Error loading video:", randomMedia.src);
-                    const img = document.createElement('img'); // Fallback to an image on video error
+                    const img = document.createElement('img'); 
                     img.src = 'https://placehold.co/400x300/CCCCCC/000000?text=Video+Load+Error&font=inter';
                     img.alt = 'Video error placeholder';
                     while (itemDiv.firstChild) { itemDiv.removeChild(itemDiv.firstChild); }
@@ -129,28 +112,29 @@ const LandingPage = () => {
             }
             
             if (!isInitial) {
-                setTimeout(() => {
+                setTimeout(() => { 
                     itemDiv.classList.remove('fade-out');
                     itemDiv.classList.add('fade-in');
-                }, 50); // ms delay
+                }, 50); 
             }
-        }, 500); // Corresponds to fade-out duration
-    }, [mediaSources]); 
+        }, 500); 
+    }, []); 
 
-    // --- Initialize Collage ---
+    // --- Initialize Collage on component mount ---
     useEffect(() => {
-        if (!collageBackgroundRef.current) return;
+        if (!collageBackgroundRef.current) return; 
 
         const bgElement = collageBackgroundRef.current;
-        while (bgElement.firstChild) {
+        while (bgElement.firstChild) { 
             bgElement.removeChild(bgElement.firstChild);
         }
         
         const newCollageItemElements = [];
-        for (let i = 0; i < numCollageItems; i++) {
+        // Using NUM_COLLAGE_ITEMS which the user set to 1
+        for (let i = 0; i < NUM_COLLAGE_ITEMS; i++) { 
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('collage-item');
-            updateCollageItem(itemDiv, true);
+            updateCollageItem(itemDiv, true); 
             bgElement.appendChild(itemDiv);
             newCollageItemElements.push(itemDiv);
         }
@@ -158,84 +142,271 @@ const LandingPage = () => {
 
         return () => {
             newCollageItemElements.forEach(item => {
-                if (item.parentNode === bgElement) {
+                if (item.parentNode === bgElement) { 
                     bgElement.removeChild(item);
                 }
             });
-            setCollageItems([]); // Clear state on unmount
+            setCollageItems([]); 
         };
-    }, [numCollageItems, updateCollageItem]); // updateCollageItem is memoized
+    }, [updateCollageItem]); 
 
-
-    // --- Periodically Update Collage ---
+    // --- Periodically Update Collage items ---
     useEffect(() => {
-        if (collageItems.length === 0) return () => {}; // Return empty cleanup if no items
+        // If only one item, no need for interval to change it, unless that's desired.
+        // For now, assuming the single item should also change periodically.
+        if (collageItems.length === 0) return () => {}; 
 
         const intervalId = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * collageItems.length);
             const itemToUpdate = collageItems[randomIndex];
-            if (itemToUpdate) {
+            if (itemToUpdate) { 
                 updateCollageItem(itemToUpdate);
             }
-        }, 3000); // ms
+        }, 3000); // Change image every 3 seconds
 
         return () => clearInterval(intervalId); 
-    }, [collageItems, updateCollageItem]); // updateCollageItem is memoized
+    }, [collageItems, updateCollageItem]); 
 
-    // --- Logo Click Navigation ---
+    // --- Logo Click Navigation Handler ---
     const handleLogoClick = () => {
+        console.log("LandingPage: Logo clicked. Preparing to show message and then navigate.");
         showMessage('Navigating...', 'You are being redirected to the ProspectRanker Home Page.', () => {
-            navigate('/home'); // Uses the potentially fallback navigate function
+            console.log("LandingPage: Message box OK clicked. Executing navigate('/home').");
+            try {
+                if (typeof navigate === 'function') {
+                    navigate('/home'); 
+                    console.log("LandingPage: navigate('/home') call attempted.");
+                } else {
+                    console.error("LandingPage: Navigation function is not available. useNavigate() might have failed or was not correctly initialized at the top level.");
+                }
+            } catch (e) {
+                console.error("LandingPage: Error occurred during navigate('/home') call:", e);
+            }
         });
     };
 
-    // --- Handle Window Resize ---
+    // --- Handle Window Resize for collage opacity (optional visual refinement) ---
     useEffect(() => {
         let resizeTimer;
         const handleResize = () => {
             if (collageBackgroundRef.current) {
-                collageBackgroundRef.current.style.opacity = '0';
+                collageBackgroundRef.current.style.opacity = '0'; 
             }
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
                 if (collageBackgroundRef.current) {
-                    collageBackgroundRef.current.style.opacity = '0.3';
+                    collageBackgroundRef.current.style.opacity = '0.3'; 
                 }
-            }, 250); // ms
+            }, 250); 
         };
 
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []); // Empty dependency array: runs once on mount, cleans up on unmount
+        return () => window.removeEventListener('resize', handleResize); 
+    }, []); 
 
 
     return (
         <>
-            {/* Styles are imported from LandingPage.css */}
+            {/* Embedded CSS styles */}
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+                
+                body, #root, .App { 
+                    height: 100%; 
+                    margin: 0;
+                    padding: 0; 
+                }
+                html {
+                    height: 100%;
+                }
+
+                .landing-page-component-container { 
+                    font-family: 'Inter', sans-serif;
+                    background-color: #111827; 
+                    color: #fff; 
+                    overflow: hidden; 
+                    height: 100vh; 
+                    width: 100vw; 
+                    display: flex;
+                    align-items: center; 
+                    justify-content: center; 
+                    position: fixed; 
+                    top: 0;
+                    left: 0;
+                }
+
+                .landing-container-inner { 
+                    position: relative; 
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .collage-background {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: grid;
+                    /* If NUM_COLLAGE_ITEMS is 1, these specific grid template definitions are less critical 
+                       as the single item will expand, but they are harmless. */
+                    grid-template-columns: 1fr; /* Single column */
+                    grid-template-rows: 1fr;    /* Single row */
+                    gap: 0px; /* No gap needed for a single item */
+                    opacity: 0.3; 
+                    z-index: 1; 
+                    overflow: hidden; 
+                    transition: opacity 0.5s ease-in-out;
+                    align-content: stretch; 
+                    justify-content: stretch; 
+                }
+
+                .collage-item {
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden; 
+                    border-radius: 0px; /* No border radius needed if it's a full background image */
+                    transition: opacity 0.5s ease-in-out; 
+                }
+
+                .collage-item img,
+                .collage-item video {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; 
+                    display: block; 
+                }
+                
+                .collage-item.fade-out { opacity: 0; }
+                .collage-item.fade-in { opacity: 1; }
+
+                .logo-container {
+                    position: relative; 
+                    z-index: 10; 
+                    text-align: center;
+                    padding: 20px;
+                    background-color: rgba(0, 0, 0, 0.3); 
+                    border-radius: 16px; 
+                    backdrop-filter: blur(5px); 
+                    -webkit-backdrop-filter: blur(5px); 
+                    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); 
+                }
+
+                .logo img { /* Style the image within the logo div */
+                    max-width: 900px; 
+                    max-height: 450px; 
+                    display: block; /* Remove extra space below image */
+                    margin: 0 auto; /* Center if container is wider */
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                }
+
+                .logo img:hover {
+                    transform: scale(1.05); 
+                }
+
+                .prompt {
+                    font-size: clamp(0.8rem, 2vw, 1rem); 
+                    color: #e0e0e0; 
+                    margin-top: 15px;
+                    opacity: 0; 
+                    transition: opacity 0.3s ease-in-out;
+                    pointer-events: none; 
+                }
+
+                .logo-container:hover .prompt { opacity: 3; } 
+
+                .collage-item img[data-loading="true"] {
+                    opacity: 0.5; 
+                    filter: blur(5px); 
+                }
+                .collage-item img[data-loading="false"] {
+                    opacity: 1; 
+                    filter: blur(0); 
+                    transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
+                }
+
+                .message-box-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.7); 
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000; 
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.3s ease, visibility 0s 0.3s; 
+                }
+
+                .message-box-overlay.visible {
+                    opacity: 1;
+                    visibility: visible;
+                    transition: opacity 0.3s ease, visibility 0s 0s; 
+                }
+
+                .message-box {
+                    background-color: #2d3748; 
+                    color: #e2e8f0; 
+                    padding: 2rem;
+                    border-radius: 0.5rem; 
+                    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+                    text-align: center;
+                    max-width: 90%; 
+                    width: 400px; 
+                }
+
+                .message-box h3 {
+                    font-size: 1.5rem; 
+                    font-weight: 700; 
+                    margin-bottom: 1rem; 
+                }
+
+                .message-box p { margin-bottom: 1.5rem; }
+
+                .message-box button {
+                    background-color: #4a5568; 
+                    color: white;
+                    padding: 0.75rem 1.5rem; 
+                    border: none;
+                    border-radius: 0.375rem; 
+                    font-weight: 600; 
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                }
+                .message-box button:hover { background-color: #2c5282; }
+            `}</style>
             <div className="landing-page-component-container">
                 <div className="landing-container-inner">
                     <div className="collage-background" ref={collageBackgroundRef}>
-                        {/* Collage items are managed by useEffect and direct DOM manipulation */}
                     </div>
 
                     <div className="logo-container">
+                        {/* Updated logo section to use an <img> tag with imported src */}
                         <div 
                             className="logo" 
-                            id="prospectRankerLogo" // ID can be kept for consistency or specific targeting if needed
                             onClick={handleLogoClick} 
                             role="button" 
-                            tabIndex={0}  // Makes it focusable
-                            onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()} // Keyboard accessibility
+                            tabIndex={0}  
+                            onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()}
                         >
-                            ProspectRanker
+                            <img 
+                                src={prospectRankerLogoSrc} 
+                                alt="ProspectRanker Logo" 
+                            />
                         </div>
                         <p className="prompt">Click to Enter</p>
                     </div>
                 </div>
 
-                {/* Conditionally render Message Box */}
                 {isMessageBoxVisible && (
-                    <div className="message-box-overlay visible"> {/* Added 'visible' class directly */}
+                    <div className="message-box-overlay visible"> 
                         <div className="message-box">
                             <h3>{messageBoxContent.title}</h3>
                             <p>{messageBoxContent.text}</p>

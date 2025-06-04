@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FileText, BrainCircuit, BarChartBig, Users } from 'lucide-react'; // Import chosen icons
 import './HomePage.css';
 
 const HomePage = () => {
@@ -18,22 +19,30 @@ const HomePage = () => {
         <h2>How ProspectRanker Works</h2>
         <div className="features-grid">
           <div className="feature-item">
-            <div className="feature-icon">📊</div>
+            <div className="feature-icon">
+              <FileText size={48} strokeWidth={1.5} /> {/* Icon for Stat Input & Profile */}
+            </div>
             <h3>Stat Input & Profile</h3>
             <p>Enter your per-game statistics, age, and current competition level to create your unique player profile.</p>
           </div>
           <div className="feature-item">
-            <div className="feature-icon">🎯</div>
+            <div className="feature-icon">
+              <BrainCircuit size={48} strokeWidth={1.5} /> {/* Icon for Probability Engine */}
+            </div>
             <h3>Probability Engine</h3>
             <p>Our algorithm provides a heuristic estimate of your chances to reach NCAA D1 and the NBA based on your data.</p>
           </div>
           <div className="feature-item">
-            <div className="feature-icon">📈</div>
+            <div className="feature-icon">
+              <BarChartBig size={48} strokeWidth={1.5} /> {/* Icon for Dynamic Rankings */}
+            </div>
             <h3>Dynamic Rankings</h3>
             <p>See where your stats place you among current NBA and NCAA players across various categories.</p>
           </div>
           <div className="feature-item">
-            <div className="feature-icon">🔍</div>
+            <div className="feature-icon">
+              <Users size={48} strokeWidth={1.5} /> {/* Icon for Player Comparison */}
+            </div>
             <h3>Player Comparison</h3>
             <p>Find professional and collegiate players whose statistical output most closely matches yours.</p>
           </div>
@@ -44,7 +53,7 @@ const HomePage = () => {
         <h2>Ready to See Your Potential?</h2>
         <p>
           Whether you're a rising star or a dedicated grinder, ProspectRanker offers insights to fuel your journey.
-          Start by entering your stats in the calculator.
+          Start by entering your stats in our calculator.
         </p>
         <Link to="/calculator" className="btn btn-secondary">Analyze My Stats</Link>
       </section>

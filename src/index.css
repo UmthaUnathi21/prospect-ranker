@@ -4,8 +4,8 @@
   --card-bg: #282828;
   --text-primary: #EAEAEA;
   --text-secondary: #A0A0A0;
-  --accent-blue: #00A8E8;
-  --accent-orange: #FF8C00;
+  --accent-blue: #0033ff;
+  --accent-orange: #0033ff;
   --border-color: #383838;
   --highlight-bg: #332a22;
 
@@ -35,7 +35,7 @@ a {
 }
 
 a:hover {
-  color: #3cf;
+  color: rgb(0, 8, 255);
 }
 
 .container {

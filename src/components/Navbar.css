@@ -30,6 +30,12 @@
   align-items: center;
 }
 
+.nav-logo img {
+  height: 150px; /* Adjust this value as needed to fit your navbar */
+  width: auto;   /* This will maintain the aspect ratio of your logo */
+  margin-right: 8px;
+}
+
 .nav-menu {
   display: flex;
   list-style: none;
