@@ -75,7 +75,7 @@ h4 { font-size: 1.2rem; }
 }
 
 .btn:hover {
-  background-color: #007bff;
+  background-color: #fbfdff;
   transform: translateY(-1px);
 }
 
@@ -88,7 +88,7 @@ h4 { font-size: 1.2rem; }
 }
 
 .btn-secondary:hover {
-  background-color: #e07b00;
+  background-color: #ffffff;
 }
 
 input[type="text"],

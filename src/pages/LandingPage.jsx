@@ -2,12 +2,10 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 // Standard import for useNavigate
 import { useNavigate } from 'react-router-dom'; 
 // Import your logo image
-import prospectRankerLogoSrc from '../assets/ProspectRanker-logo.png'; // Adjust path if your logo is named differently or in a different subfolder of assets
+import prospectRankerLogoSrc from '../assets/ProspectRanker-logo.png'; // Adjust path path for logo which was named differently.
 
-// CSS is embedded below
-
-// Define constants outside the component to ensure they are stable
-const NUM_COLLAGE_ITEMS = 1; // Adjusted by user to 1
+// Defining constants outside the component to ensure stability.
+const NUM_COLLAGE_ITEMS = 1; // Adjusted to 1 because of error/s.
 const MEDIA_SOURCES = [ // Array of media sources for the collage
     { type: 'image', src: './src/assets/LandingPage-Image01.jpg' },
     { type: 'image', src: './src/assets/LandingPage-Image02.jpg' },
@@ -24,18 +22,16 @@ const MEDIA_SOURCES = [ // Array of media sources for the collage
     { type: 'image', src: './src/assets/LandingPage-Image18.jpg' },
     { type: 'image', src: './src/assets/LandingPage-Image19.jpg' },
     { type: 'image', src: './src/assets/LandingPage-Image20.jpg' },
-    // Example for video: { type: 'video', src: 'path/to/your/video1.mp4' }, 
+    // EFor video: { type: 'video', src: 'path/to/my/video1.mp4' }, 
 ];
 
 const LandingPage = () => {
-    // Call useNavigate at the top level, unconditionally.
-    const navigate = useNavigate();
+    const navigate = useNavigate();  // Call useNavigate at the top level, unconditionally.
 
     const collageBackgroundRef = useRef(null);
     const [collageItems, setCollageItems] = useState([]);
     
-    // --- Message Box State ---
-    const [isMessageBoxVisible, setIsMessageBoxVisible] = useState(false);
+    const [isMessageBoxVisible, setIsMessageBoxVisible] = useState(false); //Message Box State.
     const [messageBoxContent, setMessageBoxContent] = useState({ title: '', text: '' });
     const [messageBoxOkCallback, setMessageBoxOkCallback] = useState(null); 
 
@@ -55,8 +51,7 @@ const LandingPage = () => {
         }
     };
 
-    // Function to update a single item in the collage
-    const updateCollageItem = useCallback((itemDiv, isInitial = false) => {
+    const updateCollageItem = useCallback((itemDiv, isInitial = false) => { // Function to update the single background item in the collage.
         if (!itemDiv) return; 
 
         const randomMedia = MEDIA_SOURCES[Math.floor(Math.random() * MEDIA_SOURCES.length)];
@@ -120,8 +115,7 @@ const LandingPage = () => {
         }, 500); 
     }, []); 
 
-    // --- Initialize Collage on component mount ---
-    useEffect(() => {
+    useEffect(() => { // Implementing Collage component 
         if (!collageBackgroundRef.current) return; 
 
         const bgElement = collageBackgroundRef.current;
@@ -130,8 +124,7 @@ const LandingPage = () => {
         }
         
         const newCollageItemElements = [];
-        // Using NUM_COLLAGE_ITEMS which the user set to 1
-        for (let i = 0; i < NUM_COLLAGE_ITEMS; i++) { 
+        for (let i = 0; i < NUM_COLLAGE_ITEMS; i++) { // Using NUM_COLLAGE_ITEMS.
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('collage-item');
             updateCollageItem(itemDiv, true); 
@@ -150,10 +143,7 @@ const LandingPage = () => {
         };
     }, [updateCollageItem]); 
 
-    // --- Periodically Update Collage items ---
-    useEffect(() => {
-        // If only one item, no need for interval to change it, unless that's desired.
-        // For now, assuming the single item should also change periodically.
+    useEffect(() => { // Code designed to periodically update the bg collage items.
         if (collageItems.length === 0) return () => {}; 
 
         const intervalId = setInterval(() => {
@@ -162,13 +152,12 @@ const LandingPage = () => {
             if (itemToUpdate) { 
                 updateCollageItem(itemToUpdate);
             }
-        }, 3000); // Change image every 3 seconds
+        }, 3000); // Alternate images every 3 seconds.
 
         return () => clearInterval(intervalId); 
     }, [collageItems, updateCollageItem]); 
 
-    // --- Logo Click Navigation Handler ---
-    const handleLogoClick = () => {
+    const handleLogoClick = () => { // This is the logo click cavigation handler. To take the User to the Home Page.
         console.log("LandingPage: Logo clicked. Preparing to show message and then navigate.");
         showMessage('Navigating...', 'You are being redirected to the ProspectRanker Home Page.', () => {
             console.log("LandingPage: Message box OK clicked. Executing navigate('/home').");
@@ -185,8 +174,7 @@ const LandingPage = () => {
         });
     };
 
-    // --- Handle Window Resize for collage opacity (optional visual refinement) ---
-    useEffect(() => {
+    useEffect(() => { // Handler for window resize and collage opacity.
         let resizeTimer;
         const handleResize = () => {
             if (collageBackgroundRef.current) {
@@ -207,7 +195,7 @@ const LandingPage = () => {
 
     return (
         <>
-            {/* Embedded CSS styles */}
+            {/* Embedded CSS styles. Exported css was causing errors. */}
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
                 
@@ -388,7 +376,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="logo-container">
-                        {/* Updated logo section to use an <img> tag with imported src */}
+                        {/* Updated logo section to use an <img> tag with imported src. */}
                         <div 
                             className="logo" 
                             onClick={handleLogoClick} 

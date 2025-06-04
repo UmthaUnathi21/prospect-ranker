@@ -1,88 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import { useData } from '../contexts/DataContext';
-import StatInputForm from '../components/StatInputForm';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { STAT_FIELDS_CONFIG } from '../config/formConfig';
-import './CalculatorPage.css';
+import React, { useState, useEffect } from 'react'; // Import necessary React hooks and components.
+import { useData } from '../contexts/DataContext'; // Import the data context to access and manage shared application data (user stats, player benchmarks).
+import StatInputForm from '../components/StatInputForm'; // Import the form component used for user stat input.
+import LoadingSpinner from '../components/LoadingSpinner'; // Import the loading spinner component for user feedback during data fetching.
+import { STAT_FIELDS_CONFIG } from '../config/formConfig'; // Import configuration for stat input fields, likely defining their names, types, options, etc.
+import './CalculatorPage.css'; // Import styles specific to the CalculatorPage.
 
 const calculateProbability = (userData, nbaPlayers, ncaaPlayers) => {
-  if (!userData || (!nbaPlayers?.length && !ncaaPlayers?.length)) return null;
+  if (!userData || (!nbaPlayers?.length && !ncaaPlayers?.length)) return null;// Error handler: If essential data is missing, cannot perform calculation.
 
-  let score = 0;
-  const maxScore = 100;
+  
+  let score = 0;// Initialize score, this will be a cumulative value based on various factors.
+  const maxScore = 100; // Define the maximum possible score to cap the calculated score.
 
+  // Define weights for different competition levels, where higher levels contribute more to the score.
+  // These weights are somewhat subjective and part of the model's heuristic.
   const levelWeights = {
     recreational: 0.02, high_school_jv: 0.05, high_school_varsity: 0.1, high_school_varsity_elite: 0.2,
-    college_club: 0.15, college_juco_elite: 0.3,
-    college_d3: 0.25, college_d2: 0.35, college_d1_low: 0.45,
-    college_d1_mid: 0.55, college_d1_high: 0.65,
-    pro_overseas_low: 0.5, pro_overseas_mid: 0.6, pro_overseas_high: 0.75,
-    nba_g_league: 0.8, nba_prospect: 0.85
+    college_club: 0.15, college_juco_elite: 0.3, // Junior college elite.
+    college_d3: 0.25, college_d2: 0.35, college_d1_low: 0.45, // NCAA Divisions.
+    college_d1_mid: 0.55, college_d1_high: 0.65, // Higher tiers of NCAA D1.
+    pro_overseas_low: 0.5, pro_overseas_mid: 0.6, pro_overseas_high: 0.75, // Professional overseas leagues.
+    nba_g_league: 0.8, nba_prospect: 0.85 // NBA G League and direct NBA prospects.
   };
-  score += (levelWeights[userData.CompetitionLevel] || 0) * 25;
-
-  if (userData.Age >= 16 && userData.Age <= 23) score += 10;
-  else if (userData.Age > 28 && userData.Age <=32) score -= 5;
-  else if (userData.Age > 32) score -=10;
-
-  const relevantNcaaBenchmarkPlayers = ncaaPlayers?.filter(p => p.Games > 10 && p.Minutes > 150 && p.Team !== "USER") || [];
   
-  let statContribution = 0;
-  if (relevantNcaaBenchmarkPlayers.length > 5) {
-      const statsToCompare = ["Points", "Rebounds", "Assists", "PlayerEfficiencyRating", "FieldGoalsPercentage", "ThreePointersPercentage"];
-      const statWeight = 50 / statsToCompare.length;
+  score += (levelWeights[userData.CompetitionLevel] || 0) * 25; // Add to score based on competition level, scaled by a factor (e.g., 25 points of the total score potential).
 
-      statsToCompare.forEach(statKey => {
-        const userStat = userData[statKey];
+  // Adjust score based on age - younger age range gets a boost, and older ages get a penalty.
+  // This reflects typical athletic peak and development primes.
+  if (userData.Age >= 16 && userData.Age <= 23) score += 10; // Prime athletic window.
+  else if (userData.Age > 28 && userData.Age <=32) score -= 5; // Past typical peak for prospects.
+  else if (userData.Age > 32) score -=10; // Significantly past typical peak
+
+  const relevantNcaaBenchmarkPlayers = ncaaPlayers?.filter(p => p.Games > 10 && p.Minutes > 150 && p.Team !== "USER") || []; // Filter NCAA players to create a relevant benchmark group.
+  
+  let statContribution = 0; // Initialize contribution from statistical performance.
+  if (relevantNcaaBenchmarkPlayers.length > 5) {
+      const statsToCompare = ["Points", "Rebounds", "Assists", "PlayerEfficiencyRating", "FieldGoalsPercentage", "ThreePointersPercentage"]; // Define which stats to compare against the NCAA benchmarks.
+      const statWeight = 50 / statsToCompare.length; // Distribute the weight for stat comparison evenly among the selected stats.
+
+      statsToCompare.forEach(statKey => { // Calculate stat contribution.
+        const userStat = userData[statKey]; 
         if (userStat === undefined || userStat === null) return;
 
-        const statValues = relevantNcaaBenchmarkPlayers.map(p => p[statKey]).filter(s => s !== undefined && s !== null && !isNaN(s));
+        const statValues = relevantNcaaBenchmarkPlayers.map(p => p[statKey]).filter(s => s !== undefined && s !== null && !isNaN(s)); // Get all valid values for the current stat from the benchmark players.
         if (statValues.length === 0) return;
 
-        statValues.sort((a, b) => a - b);
-        
+        statValues.sort((a, b) => a - b); // Calculate percentile.
         let percentileRank = 0;
         const userStatNum = parseFloat(userStat);
-        if (!isNaN(userStatNum)) {
-            const countBelowOrEqual = statValues.filter(s => parseFloat(s) <= userStatNum).length;
+        if (!isNaN(userStatNum)) { // Calculate percentile rank of user.
+            const countBelowOrEqual = statValues.filter(s => parseFloat(s) <= userStatNum).length; // Calculate percentile rank of benchmarker.
             percentileRank = (countBelowOrEqual / statValues.length);
         }
-        statContribution += percentileRank * statWeight;
+        statContribution += percentileRank * statWeight; // Add percentile rank to stat contribution.
       });
   } else {
+    // This offers a less nuanced calculation but objectively measures performance.
     if (userData.PlayerEfficiencyRating && userData.PlayerEfficiencyRating > 15) statContribution += 10;
-    if (userData.PlayerEfficiencyRating && userData.PlayerEfficiencyRating > 20) statContribution += 10;
+    if (userData.PlayerEfficiencyRating && userData.PlayerEfficiencyRating > 20) statContribution += 10; // Additional bonus for higher PER
   }
-  score += statContribution;
+  
+  score += statContribution; // Addition of the calculated stat contribution to main score.
 
-  let finalScore = Math.max(0, Math.min(score, maxScore));
-  let ncaaProbability = 0;
+  
+  let finalScore = Math.max(0, Math.min(score, maxScore)); // Final score must be within the 0 to maxScore.
+
+  
+  let ncaaProbability = 0; // NCAA & NBA probabilities.
   let nbaProbability = 0;
 
+  // Calculate NCAA D1 probability based on competition level and final score.
   if (userData.CompetitionLevel.includes('college_d1')) {
-    ncaaProbability = Math.min(90, finalScore * 0.8 + 20);
+    ncaaProbability = Math.min(90, finalScore * 0.8 + 20); // Higher base and cap for current D1 players.
   } else if (userData.CompetitionLevel.includes('college_d2') || userData.CompetitionLevel.includes('college_d3') || userData.CompetitionLevel.includes('juco_elite')) {
-    ncaaProbability = Math.min(80, finalScore * 0.9);
+    ncaaProbability = Math.min(80, finalScore * 0.9); // Mid-tier college levels.
   } else if (userData.CompetitionLevel.includes('high_school_varsity_elite')) {
-    ncaaProbability = Math.min(70, finalScore * 0.8);
+    ncaaProbability = Math.min(70, finalScore * 0.8); // Elite high school players.
   } else {
-    ncaaProbability = Math.min(60, finalScore * 0.7);
+    ncaaProbability = Math.min(60, finalScore * 0.7); // Other, lower, levels.
   }
-  ncaaProbability = Math.max(1, ncaaProbability);
+  ncaaProbability = Math.max(1, ncaaProbability); // NCAA probability must be at least 1% if any score is generated, preventing 0 for plausible candidates.
 
+  // Calculate NBA probability based on competition level and final score. NBA probability is generally lower and requires a higher threshold.
   if (userData.CompetitionLevel === 'nba_g_league' || userData.CompetitionLevel === 'nba_prospect' || userData.CompetitionLevel.includes('pro_overseas_high')) {
-    nbaProbability = Math.min(50, (finalScore - 40) * 0.8);
+    // Players already in or very near pro/NBA feeder systems.
+    nbaProbability = Math.min(50, (finalScore - 40) * 0.8); // Requires a decent score to even start registering
   } else if (userData.CompetitionLevel.includes('college_d1_high') && finalScore > 75) {
+    // High-level D1 players with high scores have a shot.
     nbaProbability = Math.min(30, (finalScore - 60) * 0.7);
   } else if (finalScore > 85) {
-     nbaProbability = Math.min(15, (finalScore - 75) * 0.5);
+    // Exceptional scores from other levels might indicate NBA potential.
+    nbaProbability = Math.min(15, (finalScore - 75) * 0.5);
   }
-  nbaProbability = Math.max(0, nbaProbability);
+  nbaProbability = Math.max(0, nbaProbability); // Same as NCAA - NBA probability cannot be negative.
 
+  // Display calculated probabilities and the final debug score, formatted to one decimal place.
   return {
     ncaa: parseFloat(ncaaProbability.toFixed(1)),
     nba: parseFloat(nbaProbability.toFixed(1)),
-    debugScore: parseFloat(finalScore.toFixed(1))
+    debugScore: parseFloat(finalScore.toFixed(1)) // Useful for understanding the model's output.
   };
 };
 
@@ -181,4 +197,5 @@ const CalculatorPage = () => {
   );
 };
 
+// Export the CalculatorPage component for use in other parts of the application
 export default CalculatorPage;

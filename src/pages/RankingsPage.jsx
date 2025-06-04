@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useData } from '../contexts/DataContext';
-import PlayerCard from '../components/PlayerCard';
+import React, { useState, useEffect, useMemo } from 'react'; // Import necessary React hooks and components.
+import { useData } from '../contexts/DataContext'; // Import the data context to access player data and user-specific stats.
+import PlayerCard from '../components/PlayerCard';// Import child components used for displaying player info and loading states.
 import LoadingSpinner from '../components/LoadingSpinner';
-import {
+import { // Import configuration constants for filtering criteria.
   MIN_GAMES_PLAYED_NBA,
   MIN_MINUTES_NBA,
   MIN_GAMES_PLAYED_NCAA,
   MIN_MINUTES_NCAA
 } from '../config/constants';
-import './RankingsPage.css';
+import './RankingsPage.css';// Import the specific stylesheet for this component.
 
+//An array of objects defining the statistics that the user can sort the player list by.
 const STAT_KEYS_FOR_SORTING = [
     { value: "Points", label: "Points (PPG)" }, { value: "Rebounds", label: "Rebounds (RPG)" },
     { value: "Assists", label: "Assists (APG)" }, { value: "Steals", label: "Steals (SPG)" },
@@ -18,6 +19,7 @@ const STAT_KEYS_FOR_SORTING = [
     { value: "FreeThrowsPercentage", label: "FT%" }, { value: "Minutes", label: "Minutes Per Game (MPG)"},
 ];
 
+// Handler for state management, and league selection, sorting, filtering, and displaying player data.
 const RankingsPage = () => {
   const { nbaPlayers, ncaaPlayers, userData, loading, error } = useData();
   const [league, setLeague] = useState('nba');
@@ -31,9 +33,9 @@ const RankingsPage = () => {
       : { minGames: MIN_GAMES_PLAYED_NCAA, minMinutes: MIN_MINUTES_NCAA };
   }, [league]);
 
-  const playersToDisplay = useMemo(() => {
+  const playersToDisplay = useMemo(() => { // Selects the appropriate player data source based on the current league.
     const sourcePlayers = league === 'nba' ? nbaPlayers : ncaaPlayers;
-    return sourcePlayers.filter(p => 
+    return sourcePlayers.filter(p =>  // Filters the players based on minimum games, minutes, and inputted search term.
         p.Games >= activeFilters.minGames && 
         p.Minutes >= activeFilters.minMinutes &&
         (p.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || p.Team?.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -41,14 +43,17 @@ const RankingsPage = () => {
   }, [league, nbaPlayers, ncaaPlayers, activeFilters, searchTerm]);
 
 
-  useEffect(() => {
-    let allPlayersForRanking = [...playersToDisplay];
+useEffect(() => {
+    let allPlayersForRanking = [...playersToDisplay]; // Used to create a copy of the players to avoid directly mutating the memo'd list.
     let userPlayerInList = null;
 
-    if (userData && userData.Points !== undefined) {
-      const userPlayerFormatted = {
+    if (userData && userData.Points !== undefined) { // Check if user data exists and has points, indicating it's valid to be displayed.
+      const userPlayerFormatted = { // Used to format the user's data into a player object consistent with the API data structure.
         ...userData,
-        PlayerID: 'USER_PLAYER', Name: userData.Name || 'Your Player', Team: 'USER',
+        PlayerID: 'USER_PLAYER', // A unique ID to identify the user's player object.
+        Name: userData.Name || 'Your Player',
+        Team: 'USER',
+        // Filling in default values of 0 for any missing stats.
         Points: userData.Points || 0, Rebounds: userData.Rebounds || 0, Assists: userData.Assists || 0,
         Steals: userData.Steals || 0, BlockedShots: userData.BlockedShots || 0,
         PlayerEfficiencyRating: userData.PlayerEfficiencyRating || 0,
@@ -56,43 +61,48 @@ const RankingsPage = () => {
         ThreePointersPercentage: userData.ThreePointersPercentage || 0,
         FreeThrowsPercentage: userData.FreeThrowsPercentage || 0,
         Minutes: userData.Minutes || 0,
-        Games: userData.Games || 1,
+        Games: userData.Games || 1, // Assume at least 1 game to avoid division by 0.
         League: league.toUpperCase()
       };
-      if (!searchTerm || userPlayerFormatted.Name?.toLowerCase().includes(searchTerm.toLowerCase())) {
-         allPlayersForRanking = [userPlayerFormatted, ...allPlayersForRanking.filter(p => p.PlayerID !== 'USER_PLAYER')];
-         userPlayerInList = userPlayerFormatted;
+      
+      if (!searchTerm || userPlayerFormatted.Name?.toLowerCase().includes(searchTerm.toLowerCase())) { // If no active search detected or the user's player matches the search, add them to the list.
+          allPlayersForRanking = [userPlayerFormatted, ...allPlayersForRanking.filter(p => p.PlayerID !== 'USER_PLAYER')]; // Place the user's player to the list for ranking.
+          userPlayerInList = userPlayerFormatted;
       }
     }
 
+    // Sort the combined list of players (including the user's, if applicable).
     const sorted = [...allPlayersForRanking].sort((a, b) => {
       let valA = a[sortBy];
       let valB = b[sortBy];
 
+      // Special case for 'Minutes' because we need to calculate Minutes Per Game (MPG) for sorting.
       if (sortBy === 'Minutes') {
         valA = a.Games > 0 ? (a.Minutes / a.Games) : 0;
         valB = b.Games > 0 ? (b.Minutes / b.Games) : 0;
       }
-      
+
+      // This treats any non-numeric or nullish values as -Infinity to push them to the bottom of the list.
       valA = (valA === undefined || valA === null || isNaN(parseFloat(valA))) ? -Infinity : parseFloat(valA);
       valB = (valB === undefined || valB === null || isNaN(parseFloat(valB))) ? -Infinity : parseFloat(valB);
-      
-      return valB - valA;
+
+      return valB - valA; // Perform a descending sort so that higher value is better.
     });
-    
-    setSortedPlayersList(sorted);
 
-  }, [playersToDisplay, userData, sortBy, league, searchTerm]);
+    setSortedPlayersList(sorted);  // Update state with newly sorted list, and trigger a re-render.
+
+  }, [playersToDisplay, userData, sortBy, league, searchTerm]); // Dependencies to trigger this effect.
 
 
+  // Conditional rendering - Show a loading spinner if data is loading and list is empty.
   if (loading && sortedPlayersList.length === 0) return (
     <div className="container"> <LoadingSpinner message={`Loading ${league.toUpperCase()} player rankings...`} /></div>
   );
+  // Error handler - Show an error message if the data fetching failed.
   if (error) return <div className="container error-message">Error loading rankings: {error}</div>;
-  
 
-  const userPlayerFromSortedList = sortedPlayersList.find(p => p.PlayerID === 'USER_PLAYER');
-  const userRank = userPlayerFromSortedList ? sortedPlayersList.indexOf(userPlayerFromSortedList) + 1 : null;
+  const userPlayerFromSortedList = sortedPlayersList.find(p => p.PlayerID === 'USER_PLAYER'); // Find the user's player object from the final sorted list to determine their rank.
+  const userRank = userPlayerFromSortedList ? sortedPlayersList.indexOf(userPlayerFromSortedList) + 1 : null; // Calculate the user's rank. Null if the user is not in the list.
 
   return (
     <div className="rankings-page container">

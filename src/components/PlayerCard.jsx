@@ -2,8 +2,9 @@ import React from 'react';
 import './PlayerCard.css';
 
 const PlayerCard = ({ player, isUserPlayer, rank, league }) => {
-  if (!player) return null;
+  if (!player) return null; // Error Handler - In the event that the player object is not provided, nothing to be rendered as to avoid errors.
 
+  // An array of formatted key statistics for display.
   const keyStats = [
     { label: "PPG", value: player.Points?.toFixed(1) },
     { label: "RPG", value: player.Rebounds?.toFixed(1) },
@@ -19,8 +20,8 @@ const PlayerCard = ({ player, isUserPlayer, rank, league }) => {
   const playerName = player.Name || 'Unknown Player';
   const playerTeam = player.Team && player.Team !== "USER" ? `(${player.Team})` : (isUserPlayer ? '(Your Profile)' : '');
 
-  return (
-    <div className={`player-card-item ${isUserPlayer ? 'user-highlight' : ''}`}>
+  return ( // The main container div. Applies a highlight if the card is for the user's player.
+    <div className={`player-card-item ${isUserPlayer ? 'user-highlight' : ''}`}> 
       <div className="player-card-header">
         {rank && <span className="player-rank">{rank}.</span>}
         <h3 className="player-name">{playerName}</h3>

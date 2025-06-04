@@ -12,25 +12,26 @@ export const DataProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Using useEffect hook to fetch initial data when the DataProvider is first mounted.
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = async () => { // Defines an async function to handle the data-fetching process.
       try {
         setLoading(true);
         setError(null);
-        const results = await Promise.allSettled([
+        const results = await Promise.allSettled([ // Using Promise.allSettled to fetch both NBA and NCAA data at the same time. Affords app functionality even with partial data.
           fetchNbaData(),
           fetchNcaaData()
         ]);
 
-        if (results[0].status === 'fulfilled') {
+        if (results[0].status === 'fulfilled') { // Processing the result of the NBA data fetch.
           setNbaPlayers(results[0].value || []);
         } else {
-          console.error("NBA Data fetch failed:", results[0].reason);
+          console.error("NBA Data fetch failed:", results[0].reason); // If failed, log the error for debugging.
           setError(prev => prev ? `${prev}, NBA data error` : 'Error fetching NBA player data.');
           setNbaPlayers([]);
         }
 
-        if (results[1].status === 'fulfilled') {
+        if (results[1].status === 'fulfilled') { // Processing the result of the NCAA data fetch.
           setNcaaPlayers(results[1].value || []);
         } else {
           console.error("NCAA Data fetch failed:", results[1].reason);
@@ -50,10 +51,11 @@ export const DataProvider = ({ children }) => {
     loadData();
   }, []);
 
-  const updateUserData = (data) => {
+  const updateUserData = (data) => { //A function to update the user custom data.
     setUserData(data);
   };
 
+  // Defining the 'value' object to be passed. Makes the state/s and functions available to components.
   const value = {
     nbaPlayers,
     ncaaPlayers,
